@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
 export default function PostDetail({ post }) {
@@ -11,6 +12,25 @@ export default function PostDetail({ post }) {
         </div>
       </div>
     )
+  }
+
+  const [showBetOptions, setShowBetOptions] = useState(false)
+  const [betType, setBetType] = useState(null) // 'believe' or 'doubt'
+  const [customAmount, setCustomAmount] = useState('')
+
+  const predefinedAmounts = [5, 10, 20, 50]
+
+  const handleBetClick = (type) => {
+    setBetType(type)
+    setShowBetOptions(true)
+  }
+
+  const handleAmountSelect = (amount) => {
+    // Handle bet placement logic here
+    console.log(`Placing ${betType} bet of $${amount}`)
+    setShowBetOptions(false)
+    setBetType(null)
+    setCustomAmount('')
   }
 
   const {
@@ -79,7 +99,7 @@ export default function PostDetail({ post }) {
           <div className="flex gap-4">
             <div className="flex-1">
               <button 
-                onClick={handleBelieveBet}
+                onClick={() => handleBetClick('believe')}
                 className="w-full py-3 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-mono"
               >
                 Believe
@@ -87,15 +107,57 @@ export default function PostDetail({ post }) {
             </div>
             <div className="flex-1">
               <button 
-                onClick={handleDoubtBet}
+                onClick={() => handleBetClick('doubt')}
                 className="w-full py-3 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition font-mono"
               >
                 Doubt
               </button>
             </div>
-          </div>
+          </div>  
         </div>
-      </div>
+        {/* Bet Amount Options */}
+      {showBetOptions && (
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-4 gap-2">
+            {predefinedAmounts.map((amount) => (
+              <button
+                key={amount}
+                onClick={() => handleAmountSelect(amount)}
+                className={cn(
+                  "py-2 px-4 rounded-lg font-mono transition",
+                  betType === 'believe' 
+                    ? "bg-green-100 hover:bg-green-200 text-green-700" 
+                    : "bg-red-100 hover:bg-red-200 text-red-700"
+                )}
+              >
+                ${amount}
+              </button>
+            ))}
+          </div>
+          
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="Custom amount"
+              value={customAmount}
+              onChange={(e) => setCustomAmount(e.target.value)}
+              className="flex-1 px-3 py-2 rounded-lg border border-accent-secondary/20 font-mono"
+            />
+            <button
+              onClick={() => handleAmountSelect(customAmount)}
+              className={cn(
+                "px-4 py-2 rounded-lg font-mono transition",
+                betType === 'believe'
+                  ? "bg-green-500 hover:bg-green-600 text-white"
+                  : "bg-red-500 hover:bg-red-600 text-white"
+              )}
+                >
+                Confirm
+                </button>
+            </div>
+            </div>
+        )}
+        </div>
 
       {/* Comments Section */}
       <div className="mt-8 bg-white border border-accent-secondary/10 rounded-lg p-6 shadow-sm">
