@@ -1,46 +1,29 @@
-'use server'
+import { createClient } from '@supabase/supabase-js'
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-import { createClient } from '@/utils/supabase/server'
-
-export async function login(formData) {
-  const supabase = await createClient()
-
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email'),
-    password: formData.get('password'),
-  }
-
-  const { error } = await supabase.auth.signInWithPassword(data)
+export async function signInWithGoogle() {
+  const supabase = await createClient(supabaseUrl,
+    supabaseAnonKey);
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+  });
 
   if (error) {
-    redirect('/error')
+    console.error(error);
+    redirect('/error');
   }
-
-  revalidatePath('/', 'layout')
-  redirect('/')
 }
 
-export async function signup(formData) {
-  const supabase = await createClient()
-
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email'),
-    password: formData.get('password'),
-  }
-
-  const { error } = await supabase.auth.signUp(data)
+export async function signInWithGithub() {
+  const supabase = await createClient(supabaseUrl, supabaseAnonKey);
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+  });
 
   if (error) {
-    redirect('/error')
+    console.error(error);
+    redirect('/error');
   }
-
-  revalidatePath('/', 'layout')
-  redirect('/')
 }
