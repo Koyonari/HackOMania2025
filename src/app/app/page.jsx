@@ -1,10 +1,60 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 import Post from "@/components/Post";
 import { Navbar } from "@/components/Navigation";
 import { Search } from "lucide-react";
-
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export default function HomePage() {
+  const [stats, setStats] = useState({
+    userCount: 0,
+    postCount: 0,
+    betTotal: 0,
+  });
+
+  useEffect(() => {
+    async function fetchStats() {
+      // Query the total number of users (members)
+      const { count: userCount, error: userError } = await supabase
+        .from("Users")
+        .select("*", { count: "exact", head: true });
+      if (userError) {
+        console.error("Error fetching user count:", userError);
+      }
+
+      // Query the total number of posts (active challenges)
+      const { count: postCount, error: postError } = await supabase
+        .from("Posts")
+        .select("*", { count: "exact", head: true });
+      if (postError) {
+        console.error("Error fetching post count:", postError);
+      }
+
+      // Query all bets and sum their bet_amount field
+      const { data: betsData, error: betsError } = await supabase
+        .from("Bets")
+        .select("amount");
+      let betTotal = 0;
+      if (betsError) {
+        console.error("Error fetching bets:", betsError);
+      } else if (betsData) {
+        // Sum up the bet_amounts (assuming bet_amount is numeric)
+        betTotal = betsData.reduce((sum, row) => sum + row.amount, 0);
+      }
+
+      setStats({
+        userCount: userCount || 0,
+        postCount: postCount || 0,
+        betTotal: betTotal || 0,
+      });
+    }
+    fetchStats();
+  }, []);
+
   const users = [
     {
       title: "Quitting Drugs",
