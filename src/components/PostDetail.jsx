@@ -88,8 +88,8 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
       // Update comment count
       setCommentCount((prevCount) => prevCount + 1);
     } catch (error) {
-      console.error("Error submitting comment:", error);
-    }
+        console.error(error);
+      }
   };
 
   return (
