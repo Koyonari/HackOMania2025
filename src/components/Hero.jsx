@@ -21,10 +21,11 @@ export const Hero = () => {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const {
-        data: { user },
+      let {
+        data: { session },
         error,
-      } = await supabase.auth.getUser();
+      } = await supabase.auth.getSession();
+      let user = session?.user;
 
       if (error) {
         console.error("Error fetching user:", error);
@@ -40,9 +41,9 @@ export const Hero = () => {
     window.addEventListener("storage", checkLoginStatus);
 
     return () => {
-      window.removeEventListener("storage", checkLoginStatus);
+      subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Empty dependency array
 
   const openSignInPopup = () => {
     if (isLoggedIn) {
