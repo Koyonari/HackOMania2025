@@ -41,7 +41,7 @@ export const Hero = () => {
     window.addEventListener("storage", checkLoginStatus);
 
     return () => {
-      subscription.unsubscribe();
+      window.removeEventListener("storage", checkLoginStatus);
     };
   }, []); // Empty dependency array
 
