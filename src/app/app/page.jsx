@@ -20,15 +20,14 @@ export default function HomePage() {
     async function fetchStats() {
       // Query the total number of users (members)
       const { count: userCount, error: userError } = await supabase
-        .from("Users")
+        .from("users")
         .select("*", { count: "exact", head: true });
       if (userError) {
         console.error("Error fetching user count:", userError);
       }
-
       // Query the total number of posts (active challenges)
       const { count: postCount, error: postError } = await supabase
-        .from("Posts")
+        .from("posts")
         .select("*", { count: "exact", head: true });
       if (postError) {
         console.error("Error fetching post count:", postError);
@@ -36,7 +35,7 @@ export default function HomePage() {
 
       // Query all bets and sum their bet_amount field
       const { data: betsData, error: betsError } = await supabase
-        .from("Bets")
+        .from("bets")
         .select("amount");
       let betTotal = 0;
       if (betsError) {
@@ -132,8 +131,8 @@ export default function HomePage() {
               </h2>
               <div className="text-lg space-y-2 text-text-primary">
                 <p>👥 {stats.userCount.toLocaleString()} Members</p>
-                <p>🎯 {stats.userCount.toLocaleString()} Active Posts</p>
-                <p>💰 {stats.userCount.toLocaleString()} Total Bets</p>
+                <p>🎯 {stats.postCount.toLocaleString()} Active Posts</p>
+                <p>💰 ${stats.betTotal.toLocaleString()} Total Bets</p>
               </div>
             </div>
 
