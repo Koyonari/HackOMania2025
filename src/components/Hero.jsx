@@ -32,7 +32,7 @@ export const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Button className="bg-brand-primary hover:bg-brand-primary/70 text-white font-medium px-8 py-6 text-lg">
+            <Button className="bg-brand-primary hover:bg-brand-primary/70 text-white font-bold px-8 py-6 text-lg">
               Get Started
             </Button>
 
@@ -42,10 +42,10 @@ export const Hero = () => {
               rel="noreferrer noopener"
               className={`${buttonVariants({
                 variant: "outline",
-              })} px-8 py-6 text-xl font-bold border-2 border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white transition-colors`}
+              })} px-8 py-6 text-xl border-2 border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white transition-colors`}
             >
               <FaMoneyBillTrendUp className="mr-2 w-5 h-5" />
-              Bet Now
+              <div className="font-bold">Bet Now</div>
             </a>
           </div>
 

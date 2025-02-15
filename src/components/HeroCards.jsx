@@ -93,7 +93,7 @@ export const HeroCards = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full bg-accent-primary text-secondary-text hover:bg-brand-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
+            <Button className="w-full font-bold bg-accent-primary text-secondary-text hover:bg-brand-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
               Volunteer Now
             </Button>
           </CardContent>
