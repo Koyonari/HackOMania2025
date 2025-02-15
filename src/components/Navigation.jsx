@@ -24,21 +24,25 @@ export const Navbar = () => {
   };
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsLoggedIn(!!session);
-    });
-
-    // Initial check
-    const checkInitialStatus = async () => {
-      const {
+    const checkLoginStatus = async () => {
+      let {
         data: { session },
+        error,
       } = await supabase.auth.getSession();
-      setIsLoggedIn(!!session);
+      let user = session?.user;
+
+      if (error) {
+        console.error("Error fetching user:", error);
+        setIsLoggedIn(false);
+      } else {
+        setIsLoggedIn(!!user);
+      }
     };
 
-    checkInitialStatus();
+    checkLoginStatus(); // Run on mount
+
+    // Listen for storage changes (detect login/logout changes across tabs)
+    window.addEventListener("storage", checkLoginStatus);
 
     return () => {
       subscription.unsubscribe();
