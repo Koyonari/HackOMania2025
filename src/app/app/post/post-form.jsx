@@ -18,11 +18,13 @@ import {
 } from "@/components/ui/form";
 
 const postFormSchema = z.object({
+  title: z.string().min(1, "Please enter a title."),
   caption: z.string().optional(),
   image: z.instanceof(File, { message: "Please select a file" })
 });
 
 const defaultValues = {
+  title: "",
   caption: "",
   image: null
 };
@@ -73,6 +75,7 @@ export default function CreatePostForm() {
       .from("posts")
       .insert({
         user_id: authData.user.id,
+        title: data.title,
         caption: data.caption,
         image: publicUrl,
         reveal_datetime: new Date(Date.now() + 10 * 1000).toISOString(),
@@ -95,6 +98,22 @@ export default function CreatePostForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter a title" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is a title for your post.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="caption"
