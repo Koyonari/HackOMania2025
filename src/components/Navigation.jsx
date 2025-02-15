@@ -118,12 +118,12 @@ export const Navbar = () => {
                 </motion.h2>
 
                 <motion.p
-                  className="text-muted-foreground mb-8 text-sm text-center"
+                  className="text-muted-foreground mb-8 text-md text-center"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  Time to Bet and Earn Big
+                  Start your journey with us
                 </motion.p>
 
                 <div className="flex flex-col sm:flex-row gap-4 w-full">
