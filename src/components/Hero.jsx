@@ -4,13 +4,13 @@ import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { HeroCards } from "./HeroCards";
 
 export const Hero = () => {
-  return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-white to-gray-50">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-brand-primary/10 blur-3xl" />
-        <div className="absolute top-40 -left-40 h-96 w-96 rounded-full bg-accent-primary/10 blur-3xl" />
-      </div>
+    return (
+        <section className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-white to-gray-50">
+            {/* Background decoration */}
+            <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-brand-primary/10 blur-3xl"/>
+                <div className="absolute top-40 -left-40 h-96 w-96 rounded-full bg-accent-primary/10 blur-3xl"/>
+            </div>
 
       <div className="container relative grid lg:grid-cols-2 place-items-center py-12 md:py-20  mx-auto">
         <div className="text-center lg:text-start space-y-8 max-w-2xl">
@@ -23,13 +23,13 @@ export const Hero = () => {
               <span className="inline bg-gradient-to-r bg-brand-primary/10 bg-clip-text">
                 Help
               </span>
-            </h1>
+                        </h1>
 
-            <p className="text-xl text-gray-600 md:w-10/12 mx-auto lg:mx-0 leading-relaxed">
-              Bet your addictions away with the help of our community of
-              volunteers. Built by addicts, for addicts.
-            </p>
-          </div>
+                        <p className="text-xl text-gray-600 md:w-10/12 mx-auto lg:mx-0 leading-relaxed">
+                            Bet your addictions away with the help of our community of
+                            volunteers. Built by addicts, for addicts.
+                        </p>
+                    </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Button className="bg-brand-primary hover:bg-brand-primary/70 text-white font-bold px-8 py-6 text-lg">
@@ -51,22 +51,11 @@ export const Hero = () => {
 
           <div className="flex items-center justify-center lg:justify-start gap-4 pt-4">
             <div className="flex -space-x-2">
-              {[
-                { id: 1, img: "https://i.pravatar.cc/150?img=70" },
-                { id: 2, img: "https://i.pravatar.cc/150?img=65" },
-                { id: 3, img: "https://i.pravatar.cc/150?img=60" },
-                { id: 4, img: "https://i.pravatar.cc/150?img=20" },
-              ].map((avatar) => (
+              {[1, 2, 3, 4].map((i) => (
                 <div
-                  key={avatar.id}
-                  className="w-10 h-10 rounded-full border-2 border-white overflow-hidden"
-                >
-                  <img
-                    src={avatar.img}
-                    alt={`User ${avatar.id}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                  key={i}
+                  className="w-10 h-10 rounded-full border-2 border-white bg-gray-200"
+                />
               ))}
             </div>
             <p className="text-gray-600">
