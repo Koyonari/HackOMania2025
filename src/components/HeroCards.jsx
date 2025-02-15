@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -8,52 +10,90 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Linkedin } from "lucide-react";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { Facebook } from "lucide-react";
+import { BsTelegram } from "react-icons/bs";
+import { useState, useEffect } from "react";
+
+const testimonials = [
+  {
+    name: "Simon Tan",
+    username: "@simon_tan",
+    text: "I've been using this for a few months now and I've already been nicotine-free for 3 weeks. I can't thank the community enough for their support.",
+    image: "https://github.com/shadcn.png",
+  },
+  {
+    name: "Alice Wong",
+    username: "@alice_wong",
+    text: "The support system here is incredible. I never thought I'd make it this far, but now I'm 2 months free of my addiction!",
+    image: "https://i.pravatar.cc/150?img=45",
+  },
+  {
+    name: "James Lee",
+    username: "@james_lee",
+    text: "This platform has truly changed my life. The encouragement from the community kept me going when I wanted to give up.",
+    image: "https://i.pravatar.cc/150?img=30",
+  },
+  {
+    name: "Maria Gomez",
+    username: "@maria_gomez",
+    text: "Finding this community was the best thing that happened to me. I'm now living a healthier, addiction-free life!",
+    image: "https://i.pravatar.cc/150?img=50",
+  },
+  {
+    name: "Daniel Cho",
+    username: "@daniel_cho",
+    text: "I was skeptical at first, but the stories and support here pushed me forward. 100 days clean and counting!",
+    image: "https://i.pravatar.cc/150?img=25",
+  },
+];
 
 export const HeroCards = () => {
+  const [testimonial, setTestimonial] = useState(testimonials[0]);
+
+  useEffect(() => {
+    const randomTestimonial =
+      testimonials[Math.floor(Math.random() * testimonials.length)];
+    setTestimonial(randomTestimonial);
+  }, []);
+
   return (
-    <div className="relative w-full min-h-[700px] grid grid-cols-1 lg:grid-cols-2 gap-6 p-4">
+    <div className="relative w-full min-h-[700px] grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 py-20">
       {/* Left Column */}
       <div className="flex flex-col gap-6">
         {/* Testimonial Card */}
         <Card className="w-full transform hover:-translate-y-1 transition-transform duration-200 bg-white/80 backdrop-blur-sm border border-gray-200/50">
           <CardHeader className="flex flex-row items-center gap-4 pb-2">
             <Avatar className="border-2 border-brand-primary">
-              <AvatarImage alt="" src="https://github.com/shadcn.png" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarImage alt="" src={testimonial.image} />
+              <AvatarFallback>{testimonial.name[0]}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <CardTitle className="text-lg font-semibold">Simon Tan</CardTitle>
+              <CardTitle className="text-lg font-semibold">
+                {testimonial.name}
+              </CardTitle>
               <CardDescription className="text-accent-primary">
-                @simon_tan
+                {testimonial.username}
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-700">
-              "I've been using BETterHelp for a few months now and I've already
-              been nicotine-free for 3 weeks. I can't thank the community enough
-              for their support."
-            </p>
+            <p className="text-gray-700">"{testimonial.text}"</p>
           </CardContent>
         </Card>
 
-        {/* Pricing Card */}
+        {/* Volunteer Card */}
         <Card className="w-full transform hover:-translate-y-1 transition-transform duration-200 bg-white/80 backdrop-blur-sm border border-gray-200/50">
           <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-2xl font-bold">
-                Be a Volunteer!
-              </CardTitle>
-            </div>
+            <CardTitle className="text-2xl font-bold">
+              Be a Volunteer!
+            </CardTitle>
             <div className="mt-4">
               Aid in the journey of conquering addictions by volunteering to
               help.
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button className="w-full bg-accent-primary hover:bg-accent-primary/90">
+            <Button className="w-full bg-accent-primary text-secondary-text hover:bg-brand-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
               Volunteer Now
             </Button>
           </CardContent>
@@ -62,7 +102,7 @@ export const HeroCards = () => {
 
       {/* Right Column */}
       <div className="flex flex-col gap-6">
-        {/* Team Card */}
+        {/* Community Card */}
         <Card className="w-full transform hover:-translate-y-1 transition-transform duration-200 bg-white/80 backdrop-blur-sm border border-gray-200/50">
           <CardHeader className="mt-8 flex justify-center items-center pb-2">
             <div className="absolute -top-8 w-24 h-24 rounded-full border-4 border-brand-primary p-1 bg-white">
@@ -83,11 +123,11 @@ export const HeroCards = () => {
           <CardFooter className="justify-center gap-2">
             {[
               {
-                icon: <GitHubLogoIcon className="w-5 h-5" />,
+                icon: <Facebook className="w-5 h-5" />,
                 href: "https://github.com/leoMirandaa",
               },
               {
-                icon: <Linkedin size="20" />,
+                icon: <BsTelegram size="20" />,
                 href: "https://www.linkedin.com/in/leopoldo-miranda/",
               },
             ].map((social, index) => (
@@ -99,7 +139,7 @@ export const HeroCards = () => {
                 className={`${buttonVariants({
                   variant: "ghost",
                   size: "sm",
-                })} hover:text-brand-primary`}
+                })} bg-primary text-secondary-text hover:accent-brand-primary/80 hover:text-secondary-text rounded-full p-2  transition-all duration-500 ease-in-out`}
               >
                 {social.icon}
               </a>
@@ -107,7 +147,7 @@ export const HeroCards = () => {
           </CardFooter>
         </Card>
 
-        {/* Feature Card */}
+        {/* Key Feature Card */}
         <Card className="w-full transform hover:-translate-y-1 transition-transform duration-200 bg-white/80 backdrop-blur-sm border border-gray-200/50">
           <CardHeader className="flex flex-row items-start gap-4">
             <div className="mt-1 p-2 rounded-xl bg-brand-primary/10">
@@ -121,15 +161,15 @@ export const HeroCards = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  d="M12 2L2 12h3v7h6v-6h2v6h6v-7h3L12 2z"
                 />
               </svg>
             </div>
             <div>
-              <CardTitle className="text-xl">Light & Dark Mode</CardTitle>
+              <CardTitle className="text-xl">Safe Space for Healing</CardTitle>
               <CardDescription className="mt-2 text-gray-600">
-                Seamlessly switch between light and dark themes to match your
-                preference and reduce eye strain.
+                A judgment-free platform that provides peer support, expert
+                advice, and resources for addiction recovery.
               </CardDescription>
             </div>
           </CardHeader>
