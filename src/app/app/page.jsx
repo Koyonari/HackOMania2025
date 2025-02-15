@@ -133,9 +133,9 @@ export default function HomePage() {
                 Community Stats
               </h2>
               <div className="text-lg space-y-2 text-text-primary">
-                <p>👥 1,200 Members</p>
-                <p>🎯 491 Active Posts</p>
-                <p>💰 $89,420 Total Bets</p>
+                <p>👥 {stats.userCount.toLocaleString()} Members</p>
+                <p>🎯 {stats.userCount.toLocaleString()} Active Posts</p>
+                <p>💰 {stats.userCount.toLocaleString()} Total Bets</p>
               </div>
             </div>
 
