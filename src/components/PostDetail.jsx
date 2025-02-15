@@ -65,12 +65,10 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
     }
 
     const newComment = {
-      username: user.username,
-      timePosted: "Just now",
-      content: commentText,
-      post_id: post.id,
-      user_id: user.id,
-      created_at: new Date().toISOString(),
+        user_id: user.id,
+        post_id: post.id,
+        content: commentText,
+        timestamp: new Date().toISOString(),
     };
 
     try {
