@@ -10,7 +10,10 @@ export default function HomePage() {
           username: "Simon Tan",
           timePosted: "2 hours ago",
           content: "Day 1 of my journey to quit gambling. Taking it one day at a time.",
-          betPool: 1500,
+          betPool: {
+            "believe": 1000,
+            "doubt": 1200
+          },
           commentCount: 15
         },
         {
@@ -18,7 +21,10 @@ export default function HomePage() {
           username: "Alice Ong",
           timePosted: "5 hours ago",
           content: "Two weeks smoke-free! The community support has been incredible.",
-          betPool: 2200,
+            betPool: {
+            "believe": 1000,
+            "doubt": 1200
+          },
           commentCount: 32
         },
         {
@@ -26,7 +32,10 @@ export default function HomePage() {
           username: "Mary Tay",
           timePosted: "1 day ago",
           content: "Starting my sobriety journey. Looking forward to the support.",
-          betPool: 1800,
+          betPool: {
+            "believe": 1000,
+            "doubt": 1200
+          },
           commentCount: 27
         }
     ]
@@ -62,8 +71,8 @@ export default function HomePage() {
         {/* Sidebar */}
         <div className="w-80 space-y-4">
           <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4 font-mono text-brand-primary">Community Stats</h2>
-            <div className="space-y-2 text-text-primary">
+            <h2 className="text-xl font-semibold mb-4 font-mono text-brand-primary">Community Stats</h2>
+            <div className="text-lg space-y-2 text-text-primary">
               <p>👥 42,069 Members</p>
               <p>🎯 891 Active Challenges</p>
               <p>💰 $89,420 Total Bets</p>
@@ -71,8 +80,8 @@ export default function HomePage() {
           </div>
           
           <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4 font-mono text-brand-primary">Top Categories</h2>
-            <div className="space-y-2">
+            <h2 className="text-xl font-semibold mb-4 font-mono text-brand-primary">Top Categories</h2>
+            <div className="text-lg space-y-2">
               <Link href="#" className="block text-accent-secondary hover:text-accent-primary transition">🚬 Smoking</Link>
               <Link href="#" className="block text-accent-secondary hover:text-accent-primary transition">🍺 Alcohol</Link>
               <Link href="#" className="block text-accent-secondary hover:text-accent-primary transition">🎮 Gaming</Link>
