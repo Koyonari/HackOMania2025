@@ -17,6 +17,8 @@ export default function HomePage() {
     betTotal: 0,
   });
 
+  const [posts, setPosts] = useState([]);
+
   useEffect(() => {
     async function fetchStats() {
       // Query the total number of users (members)
@@ -51,47 +53,111 @@ export default function HomePage() {
         postCount: postCount || 0,
         betTotal: betTotal || 0,
       });
+
+      // Query posts with associated user data, bets, and comments
+      const { data: postsWithDetails, error } = await supabase
+      .from("posts")
+      .select(`
+        *,
+        users:user_id (name),
+        bets (
+          choice,
+          amount
+        ),
+        comments (id)
+      `);
+
+      if (error) {
+      console.error("Error fetching posts:", error);
+      return;
+      }
+
+      // Transform the data into the desired format
+      const formattedPosts = postsWithDetails.map(post => {
+      // Calculate bet pools
+      const betPool = {
+        believe: 0,
+        doubt: 0
+      };
+
+      post.bets.forEach(bet => {
+        if (bet.choice === true) {
+          betPool.believe += bet.amount;
+        } else {
+          betPool.doubt += bet.amount;
+        }
+      });
+
+      // Calculate time difference for "timePosted"
+      const postDate = new Date(post.reveal_datetime);
+      const now = new Date();
+      const diffMs = now - postDate;
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      let timePosted;
+
+      if (diffHours < 1) {
+        timePosted = "Just now";
+      } else if (diffHours < 24) {
+        timePosted = `${diffHours} hours ago`;
+      } else {
+        const diffDays = Math.floor(diffHours / 24);
+        timePosted = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      }
+
+      setPosts(prevPosts => [
+        ...prevPosts, 
+        { 
+          title: post.title, 
+          username: post.users.name, 
+          timePosted: timePosted, 
+          content: post.caption, 
+          betPool: betPool, 
+          commentCount: post.comments.length 
+        }
+      ]);
+      console.log(posts)
+      });
     }
     fetchStats();
   }, []);
 
-  const users = [
-    {
-      title: "Quitting Drugs",
-      username: "Simon Tan",
-      timePosted: "2 hours ago",
-      content:
-        "Day 1 of my journey to quit drugs. Taking it one day at a time.",
-      betPool: {
-        believe: 1000,
-        doubt: 1200,
-      },
-      commentCount: 15,
-    },
-    {
-      title: "Quitting Smoking",
-      username: "Alice Ong",
-      timePosted: "5 hours ago",
-      content:
-        "Two weeks smoke-free! The community support has been incredible.",
-      betPool: {
-        believe: 1000,
-        doubt: 1200,
-      },
-      commentCount: 32,
-    },
-    {
-      title: "Quitting Drinking",
-      username: "Mary Tay",
-      timePosted: "1 day ago",
-      content: "Starting my sobriety journey. Looking forward to the support.",
-      betPool: {
-        believe: 1000,
-        doubt: 1200,
-      },
-      commentCount: 27,
-    },
-  ];
+  // const users = [
+  //   {
+  //     title: "Quitting Drugs",
+  //     username: "Simon Tan",
+  //     timePosted: "2 hours ago",
+  //     content:
+  //       "Day 1 of my journey to quit drugs. Taking it one day at a time.",
+  //     betPool: {
+  //       believe: 1000,
+  //       doubt: 1200,
+  //     },
+  //     commentCount: 15,
+  //   },
+  //   {
+  //     title: "Quitting Smoking",
+  //     username: "Alice Ong",
+  //     timePosted: "5 hours ago",
+  //     content:
+  //       "Two weeks smoke-free! The community support has been incredible.",
+  //     betPool: {
+  //       believe: 1000,
+  //       doubt: 1200,
+  //     },
+  //     commentCount: 32,
+  //   },
+  //   {
+  //     title: "Quitting Drinking",
+  //     username: "Mary Tay",
+  //     timePosted: "1 day ago",
+  //     content: "Starting my sobriety journey. Looking forward to the support.",
+  //     betPool: {
+  //       believe: 1000,
+  //       doubt: 1200,
+  //     },
+  //     commentCount: 27,
+  //   },
+  // ];
 
   return (
     <main className="min-h-screen mx-auto bg-bg-primary">
@@ -114,7 +180,7 @@ export default function HomePage() {
         <div className="flex gap-6 pb-4">
           {/* Posts Feed */}
           <div className="flex-grow space-y-4">
-            {users.map((post, index) => (
+            {posts.map((post, index) => (
               <Post key={index} user={post} />
             ))}
           </div>
