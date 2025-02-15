@@ -41,32 +41,33 @@ export async function updateSession(request) {
     .from('users')
     .select('*')
     .eq('id', user?.id);
-
+    if (currentPath.startsWith('/app'))
+    {
   // If there is no user, redirect to /login if you're not already there.
-  if (!user) {
-    if (currentPath !== '/login') {
-      url.pathname = '/login';
-      return NextResponse.redirect(url);
+        if (!user) {
+            if (currentPath !== '/login') {
+            url.pathname = '/login';
+            return NextResponse.redirect(url);
+            }
+            return NextResponse.next();
+        }
+        // If the user is logged in but no matching row in your users table, redirect to /app/settings
+        else if (user && (!data || data.length === 0)) {
+            if (currentPath !== '/app/settings' && currentPath !== '/app/settings/wallet') {
+            url.pathname = '/app/settings';
+            return NextResponse.redirect(url);
+            }
+            return NextResponse.next();
+        }
+        // If the user is logged in and has a row in the users table, redirect to /app if not already there.
+        else if (user && data && data.length > 0) {
+            if (currentPath !== '/app') {
+            url.pathname = '/app';
+            return NextResponse.redirect(url);
+            }
+            return NextResponse.next();
+        }
     }
-    return NextResponse.next();
-  }
-  // If the user is logged in but no matching row in your users table, redirect to /app/settings
-  else if (user && (!data || data.length === 0)) {
-    if (currentPath !== '/app/settings' && currentPath !== '/app/settings/wallet') {
-      url.pathname = '/app/settings';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-  // If the user is logged in and has a row in the users table, redirect to /app if not already there.
-  else if (user && data && data.length > 0) {
-    if (currentPath !== '/app') {
-      url.pathname = '/app';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
   // Fallback: return the original response if none of the above conditions matched.
   return supabaseResponse;
 }
