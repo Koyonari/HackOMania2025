@@ -7,9 +7,13 @@ export const Navbar = () => (
     {/* Navigation */}
     <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-7xl">
       <div className="flex items-center gap-8">
-        <a href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold bg-gradient-to-r from-brand-primary to-accent-primary text-transparent bg-clip-text">
-            BETter
+        <a href="/" className="flex items-center font-bold text-3xl">
+          <span className="inline bg-gradient-to-r from-brand-primary to-accent-primary text-transparent bg-clip-text">
+            BET
+          </span>
+          <span className="text-text-primary">ter</span>
+          <span className="inline bg-gradient-to-r bg-brand-primary/10 bg-clip-text">
+            Help
           </span>
         </a>
         <div className="hidden md:flex items-center gap-6">

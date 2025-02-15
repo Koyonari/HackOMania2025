@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { buttonVariants } from "./ui/button";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { HeroCards } from "./HeroCards";
 
 export const Hero = () => {
@@ -12,15 +12,15 @@ export const Hero = () => {
         <div className="absolute top-40 -left-40 h-96 w-96 rounded-full bg-accent-primary/10 blur-3xl" />
       </div>
 
-      <div className="container relative grid lg:grid-cols-2 place-items-center py-20 md:py-32 gap-10 mx-auto">
+      <div className="container relative grid lg:grid-cols-2 place-items-center py-12 md:py-20  mx-auto">
         <div className="text-center lg:text-start space-y-8 max-w-2xl">
           <div className="space-y-4">
             <h1 className="text-6xl md:text-7xl font-bold tracking-tight">
               <span className="inline bg-gradient-to-r from-brand-primary to-accent-primary text-transparent bg-clip-text">
                 BET
               </span>
-              <span className="text-text-primary">ter</span>{" "}
-              <span className="inline bg-gradient-to-r from-accent-primary via-brand-primary to-accent-secondary text-transparent bg-clip-text">
+              <span className="text-text-primary">ter</span>
+              <span className="inline bg-gradient-to-r bg-brand-primary/10 bg-clip-text">
                 Help
               </span>
             </h1>
@@ -32,7 +32,7 @@ export const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <Button className="bg-brand-primary hover:bg-brand-primary/90 text-white font-medium px-8 py-6 text-lg">
+            <Button className="bg-brand-primary hover:bg-brand-primary/70 text-white font-medium px-8 py-6 text-lg">
               Get Started
             </Button>
 
@@ -42,20 +42,31 @@ export const Hero = () => {
               rel="noreferrer noopener"
               className={`${buttonVariants({
                 variant: "outline",
-              })} px-8 py-6 text-lg border-2 border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white transition-colors`}
+              })} px-8 py-6 text-xl font-bold border-2 border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-white transition-colors`}
             >
-              <GitHubLogoIcon className="mr-2 w-5 h-5" />
-              Bet now
+              <FaMoneyBillTrendUp className="mr-2 w-5 h-5" />
+              Bet Now
             </a>
           </div>
 
           <div className="flex items-center justify-center lg:justify-start gap-4 pt-4">
             <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map((i) => (
+              {[
+                { id: 1, img: "https://i.pravatar.cc/150?img=70" },
+                { id: 2, img: "https://i.pravatar.cc/150?img=65" },
+                { id: 3, img: "https://i.pravatar.cc/150?img=60" },
+                { id: 4, img: "https://i.pravatar.cc/150?img=20" },
+              ].map((avatar) => (
                 <div
-                  key={i}
-                  className="w-10 h-10 rounded-full border-2 border-white bg-gray-200"
-                />
+                  key={avatar.id}
+                  className="w-10 h-10 rounded-full border-2 border-white overflow-hidden"
+                >
+                  <img
+                    src={avatar.img}
+                    alt={`User ${avatar.id}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               ))}
             </div>
             <p className="text-gray-600">
