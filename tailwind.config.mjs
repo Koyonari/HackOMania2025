@@ -72,6 +72,7 @@ export default {
                 ".bg-accent": { backgroundColor: "#0600c2" },
                 ".bg-background": { backgroundColor: "#ffffff" },
                 ".text-primary-text": { color: "#141414" },
+                ".text-secondary-text": { color: "#ebebeb" },
             };
             addUtilities(newUtilities, ["responsive", "hover"]);
         },
