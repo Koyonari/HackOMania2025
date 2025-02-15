@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Post from "@/components/Post";
 import { Navbar } from "@/components/Navigation";
 import { Search } from "lucide-react";
+import { redirect } from 'next/navigation';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -121,7 +122,7 @@ export default function HomePage() {
           {/* Sidebar */}
           <div className="w-80 space-y-4">
             {/* Create Post Button - Now at the top of sidebar */}
-            <Button className="w-full bg-brand-primary hover:bg-brand-primary/90 py-6 text-lg">
+            <Button className="w-full bg-brand-primary hover:bg-brand-primary/90 py-6 text-lg" onClick={() => redirect('/app/post')}>
               Create Post
             </Button>
 
