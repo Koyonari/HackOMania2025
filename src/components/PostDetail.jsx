@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import Comment from './Comment'
 
 export default function PostDetail({ post }) {
   if (!post) {
@@ -39,7 +40,7 @@ export default function PostDetail({ post }) {
     timePosted,
     content,
     betPool,
-    commentCount,
+    commentCount,   
     comments = []
   } = post
 
@@ -47,13 +48,6 @@ export default function PostDetail({ post }) {
   const believerPercentage = totalBets > 0 ? (betPool.believe / totalBets) * 100 : 50
   const separatorColor = betPool.believe >= betPool.doubt ? 'bg-green-500' : 'bg-red-500'
 
-  const handleBelieveBet = () => {
-    // Add bet handling logic
-  }
-
-  const handleDoubtBet = () => {
-    // Add bet handling logic
-  }
 
   const handleCommentSubmit = () => {
     // Add comment submission logic
@@ -180,15 +174,9 @@ export default function PostDetail({ post }) {
 
         {/* Comments List */}
         <div className="space-y-4">
-          {comments.map((comment, index) => (
-            <div key={index} className="border-b border-accent-secondary/10 pb-4">
-              <div className="flex justify-between items-center">
-                <p className="text-sm font-mono text-accent-secondary">@{comment.username}</p>
-                <p className="text-xs text-accent-secondary">{comment.timePosted}</p>
-              </div>
-              <p className="mt-2 text-text-primary">{comment.content}</p>
-            </div>
-          ))}
+            {comments.map((comment, index) => (
+                <Comment key={index} comment={comment} />
+            ))}
         </div>
       </div>
     </div>

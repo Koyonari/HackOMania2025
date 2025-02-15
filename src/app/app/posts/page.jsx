@@ -1,7 +1,7 @@
 import PostDetail from '@/components/PostDetail'
 
 export default async function PostPage() {
-  // Example data - replace with your actual data fetching
+  // Example data - replace with actual data fetching eventually
   const post = {
     title: "30 Days No Smoking Challenge",
     username: "QuitterWinner",
@@ -21,7 +21,17 @@ export default async function PostPage() {
       {
         username: "BetMaster",
         timePosted: "30m ago",
-        content: "Just increased my belief bet. You got this!"
+        content: "Just increased my belief bet. You got this!"  
+      },
+      {
+        username: "Sigmaballs",
+        timePosted: "60m ago",
+        content: "Just increased my belief bet. You got this!"  
+      },
+      {
+        username: "Icecreameater",
+        timePosted: "90m ago",
+        content: "Just increased my belief bet. You got this!"  
       }
     ]
   }
