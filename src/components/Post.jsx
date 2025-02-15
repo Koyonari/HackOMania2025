@@ -5,7 +5,6 @@ export default function Post({ user }) {
       timePosted,
       content,
       betPool,
-      votes,
       commentCount
     } = user
   
@@ -13,9 +12,7 @@ export default function Post({ user }) {
       <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm">
         <div className="flex gap-4">
           <div className="flex flex-col items-center font-mono">
-            <button className="text-accent-secondary hover:text-accent-primary">↑</button>
-            <span className="text-sm text-text-primary">{votes}</span>
-            <button className="text-accent-secondary hover:text-accent-primary">↓</button>
+    
           </div>
           
           <div className="flex-grow">

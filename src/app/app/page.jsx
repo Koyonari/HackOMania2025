@@ -11,7 +11,6 @@ export default function HomePage() {
           timePosted: "2 hours ago",
           content: "Day 1 of my journey to quit gambling. Taking it one day at a time.",
           betPool: 1500,
-          votes: 20,
           commentCount: 15
         },
         {
@@ -20,7 +19,6 @@ export default function HomePage() {
           timePosted: "5 hours ago",
           content: "Two weeks smoke-free! The community support has been incredible.",
           betPool: 2200,
-          votes: 45,
           commentCount: 32
         },
         {
@@ -29,7 +27,6 @@ export default function HomePage() {
           timePosted: "1 day ago",
           content: "Starting my sobriety journey. Looking forward to the support.",
           betPool: 1800,
-          votes: 38,
           commentCount: 27
         }
     ]
