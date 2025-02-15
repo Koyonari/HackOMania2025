@@ -9,11 +9,12 @@ the results to the site. The results are first hidden from the community
 as they place their bets, and then revealed to the community once the
 time is up.
 
-
 # Pages
+
 1. Landing Page
-2. Login Page
-3. Home Page - List of most recent posts
+2. Login/Signup Popup
+3. Forum Page - List of most recent posts
 4. Profile Page - Contain user's goals and, all of user's previous posts
 5. Settings Page - Manage user Information e.g. wallet info
-
+6. Create Post Page
+7. Notifications Page - notifies user upon winning or losing a wager
