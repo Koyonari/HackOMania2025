@@ -95,8 +95,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen mx-auto bg-bg-primary">
-      <Navbar />
-
       <div className="max-w-6xl mx-auto px-4">
         {/* Header section with search */}
         <div className="pt-24 pb-4">
