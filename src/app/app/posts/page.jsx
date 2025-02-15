@@ -10,7 +10,7 @@ export default async function PostPage() {
     betPool: {
       believe: 2500,
       doubt: 1800
-    },
+    },  
     commentCount: 24,
     comments: [
       {
