@@ -3,8 +3,13 @@ import React, { useState, useEffect } from "react";
 import { ChevronRight, Bell, User, LogIn, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signInWithGithub, signInWithGoogle } from "@/app/login/actions";
+import { UserNav } from "./UserNav";
+import { createClient } from '@/utils/supabase/client'
 
 export const Navbar = () => {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabase = createClient(supabaseUrl, supabaseAnonKey)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
 
@@ -15,6 +20,28 @@ export const Navbar = () => {
   const closeSignInPopup = () => {
     setShowSignInPopup(false);
   };
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const { data: user, error } = await supabase.auth.getUser();
+    
+      if (error) {
+        console.error("Error fetching user:", error);
+        setIsLoggedIn(false);
+      } else {
+        setIsLoggedIn(!!user);
+      }
+    };
+
+    checkLoginStatus(); // Run on mount
+
+    // Listen for storage changes (detect login/logout changes across tabs)
+    window.addEventListener("storage", checkLoginStatus);
+
+    return () => {
+      window.removeEventListener("storage", checkLoginStatus);
+    };
+  }, []);
 
   return (
     <>
@@ -62,20 +89,13 @@ export const Navbar = () => {
               </a>
             )}
             {!isLoggedIn ? (
-              <Button
-                className="bg-brand-primary hover:bg-brand-primary/90 text-bg-primary font-bold"
-                onClick={openSignInPopup}
-              >
-                <LogIn size={18} />
-                <span className="ml-2">Sign In</span>
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Button onClick={openSignInPopup} className="bg-brand-primary hover:bg-brand-primary/90 text-bg-primary font-bold">
+              <LogIn size={18} />
+              <span className="ml-2">Log In</span>
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
             ) : (
-              <Button className="bg-brand-primary hover:bg-brand-primary/90">
-                <User size={18} />
-                <span className="ml-2">Profile</span>
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
+              <UserNav />
             )}
           </div>
         </div>
