@@ -9,8 +9,8 @@ the results to the site. The results are first hidden from the community
 as they place their bets, and then revealed to the community once the
 time is up.
 
-
 # Pages
+
 1. Landing Page
 2. Login Page
 3. Home Page - List of most recent posts
