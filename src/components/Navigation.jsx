@@ -4,13 +4,14 @@ import { ChevronRight, Bell, User, LogIn, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signInWithGithub, signInWithGoogle } from "@/app/login/actions";
 import { UserNav } from "./UserNav";
-import { createClient } from '@/utils/supabase/client'
+import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 export const Navbar = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClient(supabaseUrl, supabaseAnonKey)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showSignInPopup, setShowSignInPopup] = useState(false);
 
@@ -23,27 +24,26 @@ export const Navbar = () => {
   };
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      const { data: user, error } = await supabase.auth.getUser();
-    
-      if (error) {
-        console.error("Error fetching user:", error);
-        setIsLoggedIn(false);
-      } else {
-        setIsLoggedIn(!!user);
-      }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
+    // Initial check
+    const checkInitialStatus = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
     };
 
-    checkLoginStatus(); // Run on mount
-
-    // Listen for storage changes (detect login/logout changes across tabs)
-    window.addEventListener("storage", checkLoginStatus);
+    checkInitialStatus();
 
     return () => {
-      window.removeEventListener("storage", checkLoginStatus);
+      subscription.unsubscribe();
     };
-  }, []);
-
+  }, []); // Empty dependency array
   return (
     <>
       <nav className="fixed top-0 w-full z-50 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
@@ -59,24 +59,18 @@ export const Navbar = () => {
               </span>
             </a>
             <div className="hidden md:flex items-center gap-12 font-bold text-2xl">
-              <a
-                href="#features"
+              <Link
+                href="/"
                 className="text-gray-600 hover:text-accent-primary flex items-center gap-1"
               >
                 <span>Home</span>
-              </a>
-              <a
-                href="#pricing"
+              </Link>
+              <Link
+                href="/app"
                 className="text-gray-600 hover:text-accent-primary flex items-center gap-1"
               >
                 <span>Forum</span>
-              </a>
-              <a
-                href="#pricing"
-                className="text-gray-600 hover:text-accent-primary flex items-center gap-1"
-              >
-                <span>Notifications</span>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -90,11 +84,14 @@ export const Navbar = () => {
               </a>
             )}
             {!isLoggedIn ? (
-              <Button onClick={openSignInPopup} className="bg-brand-primary hover:bg-brand-primary/90 text-bg-primary font-bold">
-              <LogIn size={18} />
-              <span className="ml-2">Log In</span>
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
+              <Button
+                onClick={openSignInPopup}
+                className="bg-brand-primary hover:bg-brand-primary/90 text-bg-primary font-bold"
+              >
+                <LogIn size={18} />
+                <span className="ml-2">Log In</span>
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
             ) : (
               <UserNav />
             )}
