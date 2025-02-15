@@ -24,7 +24,8 @@ export const Navbar = () => {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const { data: user, error } = await supabase.auth.getUser();
+      let { data: { session }, error } = await supabase.auth.getSession();
+      let user = session?.user;
     
       if (error) {
         console.error("Error fetching user:", error);
