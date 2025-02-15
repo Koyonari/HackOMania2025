@@ -6,8 +6,6 @@ import { Works } from "@/components/Works";
 export default function Home() {
   return (
     <main className="mx-auto">
-      {/* Navigation */}
-      <Navbar />
       {/* Main content */}
       <div className="pt-16 bg-gray-50">
         <Hero />
