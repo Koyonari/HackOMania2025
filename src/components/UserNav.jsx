@@ -1,13 +1,9 @@
-"use client" // If you are using Next.js app router and need a client component
+"use client"; // If you are using Next.js app router and need a client component
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,47 +13,48 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { createClient } from '@/utils/supabase/client'
+} from "@/components/ui/dropdown-menu";
+import { createClient } from "@/utils/supabase/client";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export function UserNav() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       const {
         data: { user },
         error,
-      } = await supabase.auth.getUser()
+      } = await supabase.auth.getUser();
       if (error) {
-        console.error("Error fetching user:", error)
+        console.error("Error fetching user:", error);
       } else {
-        setUser(user)
+        setUser(user);
       }
-    }
-    fetchUser()
-  }, [])
+    };
+    fetchUser();
+  }, []);
 
-  // If no user is logged in 
-  if (!user) return null
+  // If no user is logged in
+  if (!user) return null;
 
   // Extract metadata and fallback values
-  const { email, user_metadata } = user
-  const username = user_metadata?.username || user_metadata?.full_name || "Unknown"
-  const avatarUrl = user_metadata?.avatar_url || "/avatars/01.png"
+  const { email, user_metadata } = user;
+  const username =
+    user_metadata?.username || user_metadata?.full_name || "Unknown";
+  const avatarUrl = user_metadata?.avatar_url || "/avatars/01.png";
 
   // First character of the username
-  const avatarFallback = username.charAt(0).toUpperCase()
+  const avatarFallback = username.charAt(0).toUpperCase();
 
   // Example sign out handler
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    window.location.reload()
-  }
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
   return (
     <DropdownMenu>
@@ -65,7 +62,7 @@ export function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={avatarUrl} alt={username} />
-                <AvatarFallback>{avatarFallback}</AvatarFallback>
+            <AvatarFallback>{avatarFallback}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -80,26 +77,13 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSignOut}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

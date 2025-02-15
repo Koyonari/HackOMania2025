@@ -122,7 +122,7 @@ export default function HomePage() {
           {/* Sidebar */}
           <div className="w-80 space-y-4">
             {/* Create Post Button - Now at the top of sidebar */}
-            <Button className="w-full bg-brand-primary hover:bg-brand-primary/90 py-6 text-lg">
+            <Button className="w-full bg-brand-primary hover:bg-brand-primary/90 py-6 text-lg font-bold">
               Create Post
             </Button>
 
