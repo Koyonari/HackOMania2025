@@ -6,56 +6,21 @@ import { useEffect, useState } from "react";
 import Post from "@/components/Post";
 import { Navbar } from "@/components/Navigation";
 import { Search } from "lucide-react";
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 export default function HomePage() {
   const [stats, setStats] = useState({
     userCount: 0,
     postCount: 0,
     betTotal: 0,
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    async function fetchStats() {
-      // Query the total number of users (members)
-      const { count: userCount, error: userError } = await supabase
-        .from("users")
-        .select("*", { count: "exact", head: true });
-      if (userError) {
-        console.error("Error fetching user count:", userError);
-      }
-      // Query the total number of posts (active challenges)
-      const { count: postCount, error: postError } = await supabase
-        .from("posts")
-        .select("*", { count: "exact", head: true });
-      if (postError) {
-        console.error("Error fetching post count:", postError);
-      }
-
-      // Query all bets and sum their bet_amount field
-      const { data: betsData, error: betsError } = await supabase
-        .from("bets")
-        .select("amount");
-      let betTotal = 0;
-      if (betsError) {
-        console.error("Error fetching bets:", betsError);
-      } else if (betsData) {
-        // Sum up the bet_amounts (assuming bet_amount is numeric)
-        betTotal = betsData.reduce((sum, row) => sum + row.amount, 0);
-      }
-
-      setStats({
-        userCount: userCount || 0,
-        postCount: postCount || 0,
-        betTotal: betTotal || 0,
-      });
-    }
-    fetchStats();
-  }, []);
-
-  const users = [
+  const dummyPosts = [
     {
       title: "Quitting Drugs",
       username: "Simon Tan",
@@ -93,6 +58,50 @@ export default function HomePage() {
     },
   ];
 
+  useEffect(() => {
+    async function fetchStats() {
+      const { count: userCount, error: userError } = await supabase
+        .from("users")
+        .select("*", { count: "exact", head: true });
+      if (userError) {
+        console.error("Error fetching user count:", userError);
+      }
+      const { count: postCount, error: postError } = await supabase
+        .from("posts")
+        .select("*", { count: "exact", head: true });
+      if (postError) {
+        console.error("Error fetching post count:", postError);
+      }
+
+      const { data: betsData, error: betsError } = await supabase
+        .from("bets")
+        .select("amount");
+      let betTotal = 0;
+      if (betsError) {
+        console.error("Error fetching bets:", betsError);
+      } else if (betsData) {
+        betTotal = betsData.reduce((sum, row) => sum + row.amount, 0);
+      }
+
+      setStats({
+        userCount: userCount || 0,
+        postCount: postCount || 0,
+        betTotal: betTotal || 0,
+      });
+    }
+    fetchStats();
+  }, []);
+
+  // Filter posts based on search query
+  const filteredPosts = dummyPosts.filter((post) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      post.title.toLowerCase().includes(searchLower) ||
+      post.username.toLowerCase().includes(searchLower) ||
+      post.content.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <main className="min-h-screen mx-auto bg-bg-primary">
       <div className="max-w-6xl mx-auto px-4">
@@ -105,6 +114,8 @@ export default function HomePage() {
             <input
               type="search"
               placeholder="Search for posts"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 bg-white border h-[6vh] border-accent-secondary/20 rounded-full w-full text-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/50"
             />
           </div>
@@ -114,15 +125,25 @@ export default function HomePage() {
         <div className="flex gap-6 pb-4">
           {/* Posts Feed */}
           <div className="flex-grow space-y-4">
-            {users.map((post, index) => (
-              <Post key={index} user={post} />
-            ))}
+            {filteredPosts.length === 0 ? (
+              <div className="text-center py-8">
+                {searchQuery
+                  ? "No posts found matching your search"
+                  : "No posts available"}
+              </div>
+            ) : (
+              filteredPosts.map((post, index) => (
+                <Post key={index} user={post} />
+              ))
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="w-80 space-y-4">
-            {/* Create Post Button - Now at the top of sidebar */}
-            <Button className="w-full bg-brand-primary hover:bg-brand-primary/90 py-6 text-lg font-bold" onClick={() => redirect('/app/post')}>
+            <Button
+              className="w-full bg-brand-primary hover:bg-brand-primary/90 py-6 text-lg font-bold"
+              onClick={() => redirect("/app/post")}
+            >
               Create Post
             </Button>
 
