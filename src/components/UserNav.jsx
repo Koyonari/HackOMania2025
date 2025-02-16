@@ -83,7 +83,10 @@ export function UserNav() {
           <DropdownMenuItem className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer">
             Billing
           </DropdownMenuItem>
-          <DropdownMenuItem className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer">
+          <DropdownMenuItem
+            className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer"
+            onClick={() => (window.location.href = "/app/settings")}
+          >
             Settings
           </DropdownMenuItem>
         </DropdownMenuGroup>
