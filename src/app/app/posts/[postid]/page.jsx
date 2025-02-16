@@ -1,21 +1,21 @@
 import { createClient } from "@/utils/supabase/server";
-import PostDetail from '@/components/PostDetail'
+import PostDetail from "@/components/PostDetail";
 
 export default async function PostPage({ params }) {
   const { postid } = await params;
   const supabase = await createClient();
   // Fetch post data
   let { data: post, error: postError } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('id', postid)
+    .from("posts")
+    .select("*")
+    .eq("id", postid)
     .single();
 
   // Fetch the post author's details
   const { data: postAuthor, error: postAuthorError } = await supabase
-    .from('users')
-    .select('id, name')
-    .eq('id', post.user_id)
+    .from("users")
+    .select("id, name")
+    .eq("id", post.user_id)
     .single();
 
   if (postAuthorError) {
@@ -25,20 +25,24 @@ export default async function PostPage({ params }) {
   // Enrich post with author's name
   const enrichedPost = {
     ...post,
-    username: postAuthor ? postAuthor.name : "Unknown"
+    username: postAuthor ? postAuthor.name : "Unknown",
   };
   post = enrichedPost;
   // Fetch comments for this post
   let { data: comments, error: commentsError } = await supabase
-    .from('comments')
-    .select('*')
-    .eq('post_id', postid);
-  if (commentsError){console.error("Error fetching comments:", commentsError)}
+    .from("comments")
+    .select("*")
+    .eq("post_id", postid);
+  if (commentsError) {
+    console.error("Error fetching comments:", commentsError);
+  }
   let enrichedComments = [];
   if (comments && comments.length > 0) {
     // Collect unique user IDs from the comments
-    const userIds = Array.from(new Set(comments.map((comment) => comment.user_id)));
-    
+    const userIds = Array.from(
+      new Set(comments.map((comment) => comment.user_id))
+    );
+
     // Fetch user details (only id and name) for these user IDs
     const { data: users, error: usersError } = await supabase
       .from("users")
@@ -61,23 +65,23 @@ export default async function PostPage({ params }) {
 
   comments = enrichedComments;
   const { data: bets, error: betsError } = await supabase
-    .from('bets')
-    .select('*')
-    .eq('post_id', postid);
+    .from("bets")
+    .select("*")
+    .eq("post_id", postid);
   const postData = {
     post,
     comments,
-    bets
+    bets,
   };
   // In your PostPage server component
-  
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 mt-16">
       <PostDetail post={postData} />
     </div>
   );
 }
-  /* const post = {
+/* const post = {
     title: "30 Days No Smoking Challenge",
     username: "QuitterWinner",
     timePosted: "2h ago",
