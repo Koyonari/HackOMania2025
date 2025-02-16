@@ -20,6 +20,113 @@ export default function HomePage() {
   });
   const [searchQuery, setSearchQuery] = useState("");
 
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchStats() {
+      // Query the total number of users (members)
+      const { count: userCount, error: userError } = await supabase
+        .from("users")
+        .select("*", { count: "exact", head: true });
+      if (userError) {
+        console.error("Error fetching user count:", userError);
+      }
+      // Query the total number of posts (active challenges)
+      const { count: postCount, error: postError } = await supabase
+        .from("posts")
+        .select("*", { count: "exact", head: true });
+      if (postError) {
+        console.error("Error fetching post count:", postError);
+      }
+
+      // Query all bets and sum their bet_amount field
+      const { data: betsData, error: betsError } = await supabase
+        .from("bets")
+        .select("amount");
+      let betTotal = 0;
+      if (betsError) {
+        console.error("Error fetching bets:", betsError);
+      } else if (betsData) {
+        // Sum up the bet_amounts (assuming bet_amount is numeric)
+        betTotal = betsData.reduce((sum, row) => sum + row.amount, 0);
+      }
+
+      setStats({
+        userCount: userCount || 0,
+        postCount: postCount || 0,
+        betTotal: betTotal || 0,
+      });
+
+      // Query posts with associated user data, bets, and comments
+      const { data: postsWithDetails, error } = await supabase
+      .from("posts")
+      .select(`
+        *,
+        users:user_id (name),
+        bets (
+          choice,
+          amount
+        ),
+        comments (id)
+      `);
+
+      if (error) {
+      console.error("Error fetching posts:", error);
+      return;
+      }
+
+      // Transform the data into the desired format
+      const formattedPosts = postsWithDetails.map(post => {
+      // Calculate bet pools
+      const betPool = {
+        believe: 0,
+        doubt: 0
+      };
+
+      post.bets.forEach(bet => {
+        if (bet.choice === true) {
+          betPool.believe += bet.amount;
+        } else {
+          betPool.doubt += bet.amount;
+        }
+      });
+
+      // Calculate time difference for "timePosted"
+      const postDate = new Date(post.reveal_datetime);
+      const now = new Date();
+      const diffMs = now - postDate;
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      let timePosted;
+
+      if (diffHours < 1) {
+        timePosted = "Just now";
+      } else if (diffHours < 24) {
+        timePosted = `${diffHours} hours ago`;
+      } else {
+        const diffDays = Math.floor(diffHours / 24);
+        timePosted = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      }
+
+      setPosts(prevPosts => [
+        ...prevPosts, 
+        { 
+          id: post.id,
+          title: post.title, 
+          username: post.users.name, 
+          timePosted: timePosted, 
+          content: post.caption, 
+          betPool: betPool, 
+          commentCount: post.comments.length 
+        }
+      ]);
+      console.log(posts)
+      });
+    }
+    fetchStats();
+  }, []);
+
+
   const dummyPosts = [
     {
       title: "Quitting Drugs",
@@ -125,6 +232,7 @@ export default function HomePage() {
         <div className="flex gap-6 pb-4">
           {/* Posts Feed */}
           <div className="flex-grow space-y-4">
+
             {filteredPosts.length === 0 ? (
               <div className="text-center py-8">
                 {searchQuery

@@ -1,12 +1,14 @@
+
 import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Post({ user }) {
-  const { title, username, timePosted, content, betPool, commentCount } = user;
+  
+  const { id, title, username, timePosted, content, betPool, commentCount } = user;
+
   const totalBets = betPool.believe + betPool.doubt;
   const believerPercentage = (betPool.believe / totalBets) * 100;
-  const separatorColor =
-    betPool.believe >= betPool.doubt ? "bg-green-500" : "bg-red-500";
 
   // Hover animation variants
   const hoverVariants = {
@@ -27,12 +29,16 @@ export default function Post({ user }) {
   };
 
   return (
+    <Link href={`/app/posts/${id}`}>
+    <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm cursor-pointer">
+
     <motion.div
       className="bg-white border border-accent-secondary/10 rounded-lg p-4 hover:border-2 hover:border-brand-primary transition-all duration-300"
       initial="initial"
       whileHover="hover"
       variants={hoverVariants}
     >
+
       <div className="flex gap-4">
         <div className="flex-grow px-2">
           <h2 className="text-3xl font-semibold text-text-primary">{title}</h2>
@@ -68,14 +74,16 @@ export default function Post({ user }) {
               💬 {commentCount} Comments
             </button>
             <button className="hover:text-accent-primary transition">
-              🎲 Place Bet
-            </button>
-            <button className="hover:text-accent-primary transition">
               📤 Share
             </button>
           </div>
         </div>
       </div>
+
+    </div>
+    </Link> 
+
     </motion.div>
+
   );
 }
