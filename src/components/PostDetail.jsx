@@ -9,7 +9,6 @@ export default function PostDetail({ post }) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
   // State for the authenticated user (fetched asynchronously)
   const [user, setUser] = useState(null);
   // Bets, comments and other UI state
@@ -71,7 +70,7 @@ export default function PostDetail({ post }) {
     try {
       const { error } = await supabase.from("bets").insert({
         user_id: authData.user.id,
-        post_id: post.id,
+        post_id: post.post.id,
         choice,
         amount: betAmount,
       });
@@ -101,7 +100,7 @@ export default function PostDetail({ post }) {
 
     const newComment = {
       user_id: authData.user.id,
-      post_id: post.id,
+      post_id: post.post.id,
       content: commentText,
       timestamp: new Date().toISOString(),
     };
@@ -125,12 +124,11 @@ export default function PostDetail({ post }) {
     <div className="max-w-4xl mx-auto p-4">
       {/* Main Post Content */}
       <div className="bg-white border border-accent-secondary/10 rounded-lg p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-text-primary">{post.title}</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">{post.post.title}</h1>
         <p className="text-sm text-accent-secondary font-mono mt-2">
           Posted by @{user ? user.user_metadata.full_name : post.username} •{" "}
-          {post.timePosted}
         </p>
-        <p className="mt-4 text-text-primary">{post.caption}</p>
+        <p className="mt-4 text-text-primary">{post.post.caption}</p>
 
         {/* Betting Stats */}
         <div className="mt-6">

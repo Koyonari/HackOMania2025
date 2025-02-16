@@ -10,23 +10,42 @@ export default async function PostPage({ params }) {
     .select('*')
     .eq('id', postid)
     .single();
-
   // Fetch comments for this post
-  const { data: comments, error: commentsError } = await supabase
+  let { data: comments, error: commentsError } = await supabase
     .from('comments')
     .select('*')
     .eq('post_id', postid);
-  // const { data: comments, error } = await supabase
-  // .from("comments")
-  // .select("*, user:users(*)")
-  // .eq("post_id", postid);
-  console.log("Comments:", comments);
-  // Fetch betting data
+  if (commentsError){console.error("Error fetching comments:", commentsError)}
+  let enrichedComments = [];
+  if (comments && comments.length > 0) {
+    // Collect unique user IDs from the comments
+    const userIds = Array.from(new Set(comments.map((comment) => comment.user_id)));
+    
+    // Fetch user details (only id and name) for these user IDs
+    const { data: users, error: usersError } = await supabase
+      .from("users")
+      .select("id, name")
+      .in("id", userIds);
+
+    if (usersError) {
+      console.error("Error fetching users:", usersError);
+    }
+
+    // Merge the user name into each comment
+    enrichedComments = comments.map((comment) => {
+      const user = users?.find((u) => u.id === comment.user_id);
+      return {
+        ...comment,
+        username: user ? user.name : "Unknown",
+      };
+    });
+  }
+
+  comments = enrichedComments;
   const { data: bets, error: betsError } = await supabase
     .from('bets')
     .select('*')
     .eq('post_id', postid);
-
   const postData = {
     post,
     comments,
