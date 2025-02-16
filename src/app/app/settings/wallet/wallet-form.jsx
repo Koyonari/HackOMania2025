@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -45,6 +45,17 @@ export function WalletForm() {
     const [pendingPayment, setPendingPayment] = useState(null);
     const [showComplete, setShowComplete] = useState(false);
     const [accountBalance, setAccountBalance] = useState("0");
+
+    useEffect(() => {
+        async function loadInitialBalance() {
+            const { data: authData } = await supabase.auth.getUser();
+            if (authData?.user) {
+                await fetchBalance(authData.user.id);
+            }
+        }
+        
+        loadInitialBalance();
+    }, []); // Empty dependency array means this runs once on component mount
 
     const form = useForm({
         resolver: zodResolver(profileFormSchema),
