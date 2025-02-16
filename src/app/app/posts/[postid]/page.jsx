@@ -5,11 +5,29 @@ export default async function PostPage({ params }) {
   const { postid } = await params;
   const supabase = await createClient();
   // Fetch post data
-  const { data: post, error: postError } = await supabase
+  let { data: post, error: postError } = await supabase
     .from('posts')
     .select('*')
     .eq('id', postid)
     .single();
+
+  // Fetch the post author's details
+  const { data: postAuthor, error: postAuthorError } = await supabase
+    .from('users')
+    .select('id, name')
+    .eq('id', post.user_id)
+    .single();
+
+  if (postAuthorError) {
+    console.error("Error fetching post author:", postAuthorError);
+  }
+
+  // Enrich post with author's name
+  const enrichedPost = {
+    ...post,
+    username: postAuthor ? postAuthor.name : "Unknown"
+  };
+  post = enrichedPost;
   // Fetch comments for this post
   let { data: comments, error: commentsError } = await supabase
     .from('comments')
