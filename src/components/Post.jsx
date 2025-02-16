@@ -46,7 +46,7 @@ export default function Post({ user }) {
   return (
     <Link href={`/app/posts/${id}`}>
       <motion.div
-        className="bg-white border my-4 border-accent-secondary/10 rounded-lg p-4 hover:border-2 cursor-pointer hover:border-brand-primary transition-all duration-300 relative"
+        className="bg-white border mb-4 border-accent-secondary/10 rounded-lg p-4 hover:border-2 cursor-pointer hover:border-brand-primary transition-all duration-300 relative"
         initial="initial"
         whileHover="hover"
         variants={hoverVariants}
