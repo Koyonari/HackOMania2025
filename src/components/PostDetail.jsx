@@ -126,7 +126,7 @@ export default function PostDetail({ post }) {
       <div className="bg-white border border-accent-secondary/10 rounded-lg p-6 shadow-sm">
         <h1 className="text-2xl font-semibold text-text-primary">{post.post.title}</h1>
         <p className="text-sm text-accent-secondary font-mono mt-2">
-          Posted by @{user ? user.user_metadata.full_name : post.username} •{" "}
+          Posted by @{post.post.username} •{" "}
         </p>
         <p className="mt-4 text-text-primary">{post.post.caption}</p>
 
