@@ -7,7 +7,7 @@ export default function LoginPage() {
       <div className="flex flex-col justify-center items-center w-full md:w-1/3 p-8">
         <h2 className="text-3xl font-bold mb-6">Welcome Back</h2>
         <p className="text-gray-400 mb-6 text-sm text-center">
-          Time to Bet and Earn Big
+          Time to Conquer Addictions
         </p>
         <div className="flex gap-4 w-full">
           <button

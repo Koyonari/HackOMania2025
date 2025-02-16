@@ -32,6 +32,7 @@ export default function HomePage() {
         doubt: 1200,
       },
       commentCount: 15,
+      wagerEndTime: "2025-02-17T12:00:00Z",
     },
     {
       title: "Quitting Smoking",
@@ -44,6 +45,7 @@ export default function HomePage() {
         doubt: 1200,
       },
       commentCount: 32,
+      wagerEndTime: "2025-03-01T12:00:00Z",
     },
     {
       title: "Quitting Drinking",
@@ -55,6 +57,7 @@ export default function HomePage() {
         doubt: 1200,
       },
       commentCount: 27,
+      wagerEndTime: "2025-04-01T12:00:00Z",
     },
   ];
 
