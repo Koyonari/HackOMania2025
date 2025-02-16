@@ -1,38 +1,40 @@
-import PostDetail from '@/components/PostDetail'
-import { createClient } from '@/utils/supabase/client'
+import { createClient } from "@/utils/supabase/server";
+import PostDetails from '@/components/PostDetails'
 
-export default async function PostPage({ params: { postid } }) {
-  // Example data - replace with actual data fetching eventually
-  const supabase = createClient()
+export default async function PostPage({ params }) {
+  const { postId } = params;
+  const supabase = await createClient();
 
-  const { data: post } = await supabase
+  // Fetch post data
+  const { data: post, error: postError } = await supabase
     .from('posts')
-    .select('*, comments(*)')
-    .eq('id', postid)
-    .single()
+    .select('*')
+    .eq('id', postId)
+    .single();
+
+  // Fetch comments for this post
+  const { data: comments, error: commentsError } = await supabase
+    .from('comments')
+    .select('*')
+    .eq('post_id', postId);
+
+  // Fetch betting data
+  const { data: bets, error: betsError } = await supabase
+    .from('bets')
+    .select('*')
+    .eq('post_id', postId);
+
+  const postData = {
+    ...post,
+    comments,
+    bets
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      {post && (
-        <>
-          <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
-          <p className="mb-8">{post.content}</p>
-          
-          <div className="comments-section">
-            <h2 className="text-xl font-semibold mb-4">Comments</h2>
-            {post.comments?.map((comment) => (
-              <div key={comment.id} className="bg-white p-4 rounded-lg shadow mb-4">
-                <p className="text-gray-700">{comment.content}</p>
-                <span className="text-sm text-gray-500">
-                  {new Date(comment.created_at).toLocaleDateString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+    <div className="container mx-auto px-4 py-8">
+      <PostDetails post={postData} />
     </div>
-  )
+  );
 }
   /* const post = {
     title: "30 Days No Smoking Challenge",

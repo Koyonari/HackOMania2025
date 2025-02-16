@@ -107,6 +107,7 @@ export default function HomePage() {
       setPosts(prevPosts => [
         ...prevPosts, 
         { 
+          id: post.id,
           title: post.title, 
           username: post.users.name, 
           timePosted: timePosted, 

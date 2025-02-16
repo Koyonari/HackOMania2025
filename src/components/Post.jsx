@@ -1,16 +1,16 @@
 
+import Link from "next/link";
 
 export default function Post({ user }) {
   
-  const { title, username, timePosted, content, betPool, commentCount } = user;
+  const { id, title, username, timePosted, content, betPool, commentCount } = user;
 
   // Calculate percentages for the heat bar
   const totalBets = betPool.believe + betPool.doubt;
   const believerPercentage = (betPool.believe / totalBets) * 100;
-  const separatorColor =
-    betPool.believe >= betPool.doubt ? "bg-green-500" : "bg-red-500";
 
   return (
+    <Link href={`/app/posts/${id}`}>
     <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm cursor-pointer">
       <div className="flex gap-4">
         <div className="flex-grow px-2">
@@ -56,5 +56,6 @@ export default function Post({ user }) {
         </div>
       </div>
     </div>
+    </Link> 
   );
 }
