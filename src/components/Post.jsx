@@ -1,4 +1,7 @@
+
+
 export default function Post({ user }) {
+  
   const { title, username, timePosted, content, betPool, commentCount } = user;
 
   // Calculate percentages for the heat bar
@@ -8,7 +11,7 @@ export default function Post({ user }) {
     betPool.believe >= betPool.doubt ? "bg-green-500" : "bg-red-500";
 
   return (
-    <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm">
+    <div className="bg-white border border-accent-secondary/10 rounded-lg p-4 shadow-sm cursor-pointer">
       <div className="flex gap-4">
         <div className="flex-grow px-2">
           <h2 className="text-3xl font-semibold text-text-primary">{title}</h2>
@@ -45,9 +48,6 @@ export default function Post({ user }) {
           <div className="mt-4 flex gap-4 text-sm text-accent-secondary">
             <button className="hover:text-accent-primary transition">
               💬 {commentCount} Comments
-            </button>
-            <button className="hover:text-accent-primary transition">
-              🎲 Place Bet
             </button>
             <button className="hover:text-accent-primary transition">
               📤 Share
