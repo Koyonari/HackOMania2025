@@ -1,36 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Comment from "./Comment";
 import { createClient } from "@/utils/supabase/client";
 
-
-
 export default function PostDetail({ post }) {
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const subabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, subabaseAnonKey);
-  const { title, username, timePosted, content, betPool } = post;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+  // State for the authenticated user (fetched asynchronously)
+  const [user, setUser] = useState(null);
+  // Bets, comments and other UI state
+  const [bets, setBets] = useState(post.bets || []);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post?.comments || []);
-  const [commentCount, setCommentCount] = useState(post?.commentCount || 0);
+  const [commentCount, setCommentCount] = useState(
+    post?.commentCount || (post?.comments ? post.comments.length : 0)
+  );
   const [showBetOptions, setShowBetOptions] = useState(false);
-  const [betType, setBetType] = useState(null);
+  const [betType, setBetType] = useState(null); // "believe" or "doubt"
   const [customAmount, setCustomAmount] = useState("");
-  if (!post) {
-    return (
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="bg-white border border-accent-secondary/10 rounded-lg p-6 shadow-sm">
-          <h1 className="text-2xl font-semibold text-text-primary">
-            Loading post...
-          </h1>
-        </div>
-      </div>
-    );
-  }
 
+  // Fetch the authenticated user once the component mounts.
+  useEffect(() => {
+    async function fetchUser() {
+      const { data: authData, error } = await supabase.auth.getUser();
+      if (!error && authData.user) {
+        setUser(authData.user);
+      }
+    }
+    fetchUser();
+  }, [supabase]);
+
+  // Compute totals based on bets using the Bets table structure
+  const believeTotal = bets.reduce(
+    (sum, bet) => (bet.choice ? sum + bet.amount : sum),
+    0
+  );
+  const doubtTotal = bets.reduce(
+    (sum, bet) => (!bet.choice ? sum + bet.amount : sum),
+    0
+  );
+  const totalBets = believeTotal + doubtTotal;
+  const believerPercentage =
+    totalBets > 0 ? (believeTotal / totalBets) * 100 : 50;
+  const separatorColor =
+    believeTotal >= doubtTotal ? "bg-green-500" : "bg-red-500";
+
+  // Predefined bet amounts
   const predefinedAmounts = [5, 10, 20, 50];
 
   const handleBetClick = (type) => {
@@ -38,37 +57,53 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
     setShowBetOptions(true);
   };
 
-  const handleAmountSelect = (amount) => {
-    // Handle bet placement logic here
-    console.log(`Placing ${betType} bet of $${amount}`);
+  // Place a bet by inserting a row into the Bets table.
+  const handleAmountSelect = async (amount) => {
+    if (!betType) return;
+
+    const { data: authData, error: userError } = await supabase.auth.getUser();
+    if (userError || !authData.user) {
+      window.location.href = "/login";
+      return;
+    }
+    const choice = betType === "believe"; // true for believe, false for doubt
+    const betAmount = Number(amount);
+    try {
+      const { error } = await supabase.from("bets").insert({
+        user_id: authData.user.id,
+        post_id: post.id,
+        choice,
+        amount: betAmount,
+      });
+      if (error) {
+        console.error("Error placing bet:", error.message);
+      } else {
+        console.log(`Placed ${betType} bet of $${betAmount}`);
+        // Update local bets state if needed
+        setBets((prevBets) => [...prevBets, { choice, amount: betAmount }]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
     setShowBetOptions(false);
     setBetType(null);
     setCustomAmount("");
   };
 
-  const totalBets = betPool.believe + betPool.doubt;
-  const believerPercentage =
-    totalBets > 0 ? (betPool.believe / totalBets) * 100 : 50;
-  const separatorColor =
-    betPool.believe >= betPool.doubt ? "bg-green-500" : "bg-red-500";
-
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
+    const { data: authData, error: userError } = await supabase.auth.getUser();
+    if (userError || !authData.user) {
       window.location.href = "/login";
       return;
     }
 
     const newComment = {
-        user_id: user.id,
-        post_id: post.id,
-        content: commentText,
-        timestamp: new Date().toISOString(),
+      user_id: authData.user.id,
+      post_id: post.id,
+      content: commentText,
+      timestamp: new Date().toISOString(),
     };
 
     try {
@@ -76,35 +111,32 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
         .from("comments")
         .insert(newComment)
         .select();
-
       if (error) throw error;
-
       // Update local state with new comment
       setComments((prevComments) => [newComment, ...prevComments]);
       setCommentText("");
-
-      // Update comment count
       setCommentCount((prevCount) => prevCount + 1);
     } catch (error) {
-        console.error(error);
-      }
+      console.error(error);
+    }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Main Post Content */}
       <div className="bg-white border border-accent-secondary/10 rounded-lg p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-text-primary">{title}</h1>
+        <h1 className="text-2xl font-semibold text-text-primary">{post.title}</h1>
         <p className="text-sm text-accent-secondary font-mono mt-2">
-          Posted by @{username} • {timePosted}
+          Posted by @{user ? user.user_metadata.full_name : post.username} •{" "}
+          {post.timePosted}
         </p>
-        <p className="mt-4 text-text-primary">{content}</p>
+        <p className="mt-4 text-text-primary">{post.caption}</p>
 
         {/* Betting Stats */}
         <div className="mt-6">
           <div className="relative w-full h-4 bg-red-200 rounded-full overflow-hidden">
             <div
-              className={cn("h-full bg-green-400 transition-all duration-300")}
+              className={cn("h-full transition-all duration-300", "bg-green-400")}
               style={{ width: `${believerPercentage}%` }}
             />
             <div
@@ -114,18 +146,16 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
               )}
             />
           </div>
-
           <div className="mt-1 flex justify-between text-sm">
             <span className="text-green-600">Believers</span>
             <span className="text-red-600">Doubters</span>
           </div>
-
           <div className="mt-1 flex justify-between text-xs font-mono">
             <span className="text-green-600">
-              ${betPool.believe.toLocaleString()}
+              ${believeTotal.toLocaleString()}
             </span>
             <span className="text-red-600">
-              ${betPool.doubt.toLocaleString()}
+              ${doubtTotal.toLocaleString()}
             </span>
           </div>
         </div>
@@ -152,6 +182,7 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
             </div>
           </div>
         </div>
+
         {/* Bet Amount Options */}
         {showBetOptions && (
           <div className="mt-4 space-y-4">
@@ -171,7 +202,6 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
                 </button>
               ))}
             </div>
-
             <div className="flex gap-2">
               <input
                 type="number"
@@ -201,10 +231,9 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
         <h3 className="text-lg font-semibold mb-4">
           Comments ({commentCount})
         </h3>
-
-        {/* New Comment Input */}
         <div className="mb-6">
           <textarea
+            value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             className="w-full p-3 border border-accent-secondary/20 rounded-lg font-mono resize-none focus:outline-none focus:ring-2 focus:ring-accent-primary"
             placeholder="Add a comment..."
@@ -217,11 +246,9 @@ const supabase = createClient(supabaseUrl, subabaseAnonKey);
             Post Comment
           </button>
         </div>
-
-        {/* Comments List */}
         <div className="space-y-4">
           {comments.map((comment, index) => (
-            <Comment key={index} comment={comment} />
+            <Comment key={index} comment={comment}/>
           ))}
         </div>
       </div>

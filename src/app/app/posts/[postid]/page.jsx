@@ -1,38 +1,42 @@
 import { createClient } from "@/utils/supabase/server";
-import PostDetails from '@/components/PostDetails'
+import PostDetail from '@/components/PostDetail'
 
 export default async function PostPage({ params }) {
-  const { postId } = params;
+  const { postid } = await params;
   const supabase = await createClient();
-
   // Fetch post data
   const { data: post, error: postError } = await supabase
     .from('posts')
     .select('*')
-    .eq('id', postId)
+    .eq('id', postid)
     .single();
 
   // Fetch comments for this post
   const { data: comments, error: commentsError } = await supabase
     .from('comments')
     .select('*')
-    .eq('post_id', postId);
-
+    .eq('post_id', postid);
+  // const { data: comments, error } = await supabase
+  // .from("comments")
+  // .select("*, user:users(*)")
+  // .eq("post_id", postid);
+  console.log("Comments:", comments);
   // Fetch betting data
   const { data: bets, error: betsError } = await supabase
     .from('bets')
     .select('*')
-    .eq('post_id', postId);
+    .eq('post_id', postid);
 
   const postData = {
-    ...post,
+    post,
     comments,
     bets
   };
-
+  // In your PostPage server component
+  
   return (
     <div className="container mx-auto px-4 py-8">
-      <PostDetails post={postData} />
+      <PostDetail post={postData} />
     </div>
   );
 }
