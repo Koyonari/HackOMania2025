@@ -78,15 +78,7 @@ export const Navbar = () => {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {isLoggedIn && (
-              <a
-                href="/notifications"
-                className="hidden md:flex items-center gap-2 text-gray-600 hover:text-accent-primary"
-              >
-                <Bell size={20} />
-                <span>Notifications</span>
-              </a>
-            )}
+            {isLoggedIn}
             {!isLoggedIn ? (
               <Button
                 onClick={openSignInPopup}

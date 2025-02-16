@@ -77,12 +77,23 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer">
+            Profile
+          </DropdownMenuItem>
+          <DropdownMenuItem className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer">
+            Billing
+          </DropdownMenuItem>
+          <DropdownMenuItem className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer">
+            Settings
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut}>Log out</DropdownMenuItem>
+        <DropdownMenuItem
+          className="focus:bg-gradient-to-r focus:from-blue-700 focus:to-brand-primary focus:text-secondary-text cursor-pointer"
+          onClick={handleSignOut}
+        >
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
